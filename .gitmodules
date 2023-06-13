@@ -1,0 +1,3 @@
+[submodule "Joe-s-Special-Matrix-Calc"]
+	path = src/joemat
+	url = git@github.com:cherche/Joe-s-Special-Matrix-Calc.git
