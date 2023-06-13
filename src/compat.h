@@ -8,6 +8,8 @@ using std::vector;
 using std::list;
 using std::string;
 
+#include "joemat/src/headers/lie_algebra.h"
+
 #include <ginac/matrix.h>
 #include <ginac/ex.h>
 #include <ginac/mul.h>
@@ -20,10 +22,24 @@ using GiNaC::ex;
 namespace g = GiNaC;
 
 g::matrix toMatrix(const char* s);
-g::matrix toMatrix(string s);
 const char* toCharArray(g::matrix a);
-const char* toCharArray(string str);
+g::matrix toMatrix(string s);
 string toString(g::matrix a);
+
+lie_algebra* toLieAlgebra(const char* s);
+const char* toCharArray(lie_algebra* l);
+lie_algebra* toLieAlgebra(string str);
+string toString(lie_algebra* l);
+
+vector<g::matrix> toMatrixSequence(const char* s);
+const char* toCharArray(vector<g::matrix> b);
+vector<g::matrix> toMatrixSequence(string str);
+string toString(vector<g::matrix> b);
+
+const char* toCharArray(string str);
+// the following is already handled by C++
+// string toString(const char*);
+string join(vector<string> strings, string joiner);
 vector<string> split(string target, string delimiter);
 
 #endif // COMPAT_H

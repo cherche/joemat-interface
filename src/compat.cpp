@@ -44,15 +44,6 @@ const char* toCharArray(g::matrix a) {
     return toCharArray(str);
 }
 
-const char* toCharArray(string str) {
-    // declaring character array (+1 for null terminator)
-    char* result = new char[str.length() + 1];
-    // copying the contents of the
-    // string to char array
-    strcpy(result, str.c_str());
-    return result;
-}
-
 string toString(g::matrix a) {
     string result = "";
     for (int i = 0; i < a.rows(); i++) {
@@ -65,6 +56,81 @@ string toString(g::matrix a) {
         }
     }
     return "[" + result + "]";
+}
+
+lie_algebra* toLieAlgebra(const char* s) {
+    string str(s);
+    return toLieAlgebra(str);
+}
+
+const char* toCharArray(lie_algebra* l) {
+    string str = toString(l);
+    return toCharArray(str);
+}
+
+lie_algebra* toLieAlgebra(string str) {
+    vector<g::matrix> generators = toMatrixSequence(str);
+    lie_algebra* l = new lie_algebra(generators, false);
+    return l;
+}
+
+string toString(lie_algebra* l) {
+    vector<g::matrix> basis = l->get_basis();
+    return toString(basis);
+}
+
+const char* toCharArray(string str) {
+    // declaring character array (+1 for null terminator)
+    char* result = new char[str.length() + 1];
+    // copying the contents of the
+    // string to char array
+    strcpy(result, str.c_str());
+    return result;
+}
+
+vector<g::matrix> toMatrixSequence(const char* s) {
+    string str(s);
+    return toMatrixSequence(str);
+}
+
+const char* toCharArray(vector<g::matrix> b) {
+    string str = toString(b);
+    return toCharArray(str);
+}
+
+vector<g::matrix> toMatrixSequence(string str) {
+    vector<string> matrixStrings = split(str, "\n");
+
+    vector<g::matrix> seq = vector<g::matrix>();
+    for (int i = 0; i < matrixStrings.size(); i++) {
+        g::matrix matrix = toMatrix(matrixStrings[i]);
+        seq.push_back(matrix);
+    }
+
+    return seq;
+}
+
+string toString(vector<g::matrix> seq) {
+    string seqString = "";
+    for (int i = 0; i < seq.size(); i++) {
+        if (i != 0) {
+            seqString += "\n";
+        }
+        seqString += toString(seq[i]);
+    }
+
+    return seqString;
+}
+
+string join(vector<string> strings, string joiner) {
+    string result = "";
+    for (int i = 0; i < strings.size(); i++) {
+        if (i != 0) {
+            result += joiner;
+        }
+        result += strings[i];
+    }
+    return result;
 }
 
 vector<string> split(string target, string delimiter) {
