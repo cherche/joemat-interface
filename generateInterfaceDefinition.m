@@ -1,5 +1,5 @@
 mex -setup cpp;
 libName = "joemat";
-libFile = "bin/joemat.dylib";
-headerFile = "include/libjoemat.h";
+libFile = "bin/libjoemat.dylib";
+headerFile = "include/joemat.h";
 clibgen.generateLibraryDefinition(headerFile, "Libraries", libFile, "PackageName", libName);
