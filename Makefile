@@ -15,7 +15,7 @@ LDFLAGS := -Wl,-v
 # (No idea how that works.)
 bin/libjoemat.dylib: bin/joemat/libjoemat.a bin/compat.o bin/interface.o
 #	ar rcs $@ $^
-	$(CXX) $(CFLAGS) bin/compat.o bin/interface.o -o $@ -Lbin/joemat -ljoemat -lginac -lcln -lgmp -Wl,-v,-dylib
+	$(CXX) $(CFLAGS) -shared bin/compat.o bin/interface.o -o $@ -Lbin/joemat -ljoemat -lginac -lcln -lgmp -Wl,-v,-dylib
 # Note that macOS's `ld` has no -Bstatic option,
 # so the only way to force a static link is by
 # removing all the shared versions of the libraries,
@@ -24,7 +24,7 @@ bin/libjoemat.dylib: bin/joemat/libjoemat.a bin/compat.o bin/interface.o
 bin/main.o: src/main.cpp
 	$(CXX) $(CFLAGS) -c -o $@ $^ $(LDFLAGS)
 
-bin/main: bin/main.o
+bin/test: bin/main.o
 	$(CXX) $(CFLAGS) -Lbin -ljoemat -o $@ $^
 
 bin/compat.o: src/compat.cpp
@@ -36,7 +36,7 @@ bin/interface.o: src/interface.cpp
 bin/joemat/libjoemat.a: src/joemat/out/library.a
 	cp $^ $@
 
-test: bin/libjoemat.dylib bin/main.o bin/main
+test: bin/libjoemat.dylib bin/main.o bin/test
 all: bin/joemat/libjoemat.a bin/compat.o bin/libjoemat.dylib
 clean:
 	rm -r bin/*
