@@ -1,21 +1,40 @@
 #include "interface.h"
 
-int getMatrixRank(const char* s) {
-    g::matrix x = toMatrix(s);
-    int r = lin_alg::rank(x);
-    return r;
+lie_algebra* storedLieAlgebra;
+lie_algebra* workingLieAlgebra;
+
+void setLieAlgebra(const char* s) {
+    storedLieAlgebra = toLieAlgebra(s);
+    workingLieAlgebra = storedLieAlgebra;
+}
+
+int getLieAlgebraDim() {
+    return workingLieAlgebra->get_dim();
+}
+
+const char* getLieAlgebraBasis() {
+    vector<g::matrix> basis = workingLieAlgebra->get_basis();
+    return toCharArray(basis);
 }
 
 int getLieAlgebraDim(const char* s) {
-    lie_algebra* l = toLieAlgebra(s);
-    int dim = l->get_dim();
+    workingLieAlgebra = toLieAlgebra(s);
+    int dim = getLieAlgebraDim();
+    workingLieAlgebra = storedLieAlgebra;
     return dim;
 }
 
 const char* getLieAlgebraBasis(const char* s) {
-    lie_algebra* l = toLieAlgebra(s);
-    vector<g::matrix> basis = l->get_basis();
-    return toCharArray(basis);
+    workingLieAlgebra = toLieAlgebra(s);
+    const char* result = getLieAlgebraBasis();
+    workingLieAlgebra = storedLieAlgebra;
+    return result;
+}
+
+int getMatrixRank(const char* s) {
+    g::matrix x = toMatrix(s);
+    int r = lin_alg::rank(x);
+    return r;
 }
 
 int getZero() {
