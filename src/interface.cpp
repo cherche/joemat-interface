@@ -17,6 +17,16 @@ const char* getLieAlgebraBasis() {
     return toCharArray(basis);
 }
 
+const char* getLieAlgebraCentralizer() {
+    lie_algebra* centralizer = workingLieAlgebra->compute_centralizer();
+    return toCharArray(centralizer);
+}
+
+const char* getLieAlgebraNormalizer() {
+    lie_algebra* normalizer = workingLieAlgebra->compute_normalizer();
+    return toCharArray(normalizer);
+}
+
 int getLieAlgebraDim(const char* s) {
     workingLieAlgebra = toLieAlgebra(s);
     int dim = getLieAlgebraDim();
@@ -31,12 +41,26 @@ const char* getLieAlgebraBasis(const char* s) {
     return result;
 }
 
-int getMatrixRank(const char* s) {
-    g::matrix x = toMatrix(s);
-    int r = lin_alg::rank(x);
-    return r;
+const char* getLieAlgebraCentralizer(const char* s) {
+    workingLieAlgebra = toLieAlgebra(s);
+    const char* result = getLieAlgebraCentralizer();
+    workingLieAlgebra = storedLieAlgebra;
+    return result;
 }
 
-int getZero() {
-    return 0;
+const char* getLieAlgebraNormalizer(const char* s) {
+    workingLieAlgebra = toLieAlgebra(s);
+    const char* result = getLieAlgebraNormalizer();
+    workingLieAlgebra = storedLieAlgebra;
+    return result;
 }
+
+// int getMatrixRank(const char* s) {
+//     g::matrix x = toMatrix(s);
+//     int r = lin_alg::rank(x);
+//     return r;
+// }
+// 
+// int getZero() {
+//     return 0;
+// }

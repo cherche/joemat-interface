@@ -1,8 +1,14 @@
 #include "compat.h"
 
+// matrices
 g::matrix toMatrix(const char* s) {
     string str(s);
     return toMatrix(str);
+}
+
+const char* toCharArray(g::matrix a) {
+    string str = toString(a);
+    return toCharArray(str);
 }
 
 // We assume the input is something like "[1 0; 0 1]"
@@ -39,11 +45,6 @@ g::matrix toMatrix(string s) {
     return result;
 }
 
-const char* toCharArray(g::matrix a) {
-    string str = toString(a);
-    return toCharArray(str);
-}
-
 string toString(g::matrix a) {
     string result = "";
     for (int i = 0; i < a.rows(); i++) {
@@ -58,36 +59,7 @@ string toString(g::matrix a) {
     return "[" + result + "]";
 }
 
-lie_algebra* toLieAlgebra(const char* s) {
-    string str(s);
-    return toLieAlgebra(str);
-}
-
-const char* toCharArray(lie_algebra* l) {
-    string str = toString(l);
-    return toCharArray(str);
-}
-
-lie_algebra* toLieAlgebra(string str) {
-    vector<g::matrix> generators = toMatrixSequence(str);
-    lie_algebra* l = new lie_algebra(generators, false);
-    return l;
-}
-
-string toString(lie_algebra* l) {
-    vector<g::matrix> basis = l->get_basis();
-    return toString(basis);
-}
-
-const char* toCharArray(string str) {
-    // declaring character array (+1 for null terminator)
-    char* result = new char[str.length() + 1];
-    // copying the contents of the
-    // string to char array
-    strcpy(result, str.c_str());
-    return result;
-}
-
+// matrix sequences
 vector<g::matrix> toMatrixSequence(const char* s) {
     string str(s);
     return toMatrixSequence(str);
@@ -120,6 +92,73 @@ string toString(vector<g::matrix> seq) {
     }
 
     return seqString;
+}
+
+// lie algebras
+lie_algebra* toLieAlgebra(const char* s) {
+    string str(s);
+    return toLieAlgebra(str);
+}
+
+const char* toCharArray(lie_algebra* l) {
+    string str = toString(l);
+    return toCharArray(str);
+}
+
+lie_algebra* toLieAlgebra(string str) {
+    vector<g::matrix> generators = toMatrixSequence(str);
+    lie_algebra* l = new lie_algebra(generators, false);
+    return l;
+}
+
+string toString(lie_algebra* l) {
+    vector<g::matrix> basis = l->get_basis();
+    return toString(basis);
+}
+
+// lie algebra sequences
+vector<lie_algebra*> toLieAlgebraSequence(const char* s) {
+    string str(s);
+    return toLieAlgebraSequence(str);
+}
+
+const char* toCharArray(vector<lie_algebra*> b) {
+    string str = toString(b);
+    return toCharArray(str);
+}
+
+vector<lie_algebra*> toLieAlgebraSequence(string str) {
+    vector<string> algebraStrings = split(str, "\n@\n");
+
+    vector<lie_algebra*> seq = vector<lie_algebra*>();
+    for (int i = 0; i < algebraStrings.size(); i++) {
+        lie_algebra* algebra = toLieAlgebra(algebraStrings[i]);
+        seq.push_back(algebra);
+    }
+
+    return seq;
+}
+
+string toString(vector<lie_algebra*> seq) {
+    string seqString = "";
+    for (int i = 0; i < seq.size(); i++) {
+        if (i != 0) {
+            seqString += "\n@\n";
+        }
+        seqString += toString(seq[i]);
+    }
+
+    return seqString;
+}
+
+// util
+const char* toCharArray(string str) {
+    // declaring character array (+1 for null terminator)
+    char* result = new char[str.length() + 1];
+    // copying the contents of the
+    // string to char array
+    strcpy(result, str.c_str());
+    return result;
 }
 
 string join(vector<string> strings, string joiner) {

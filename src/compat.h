@@ -26,15 +26,20 @@ const char* toCharArray(g::matrix a);
 g::matrix toMatrix(string s);
 string toString(g::matrix a);
 
+vector<g::matrix> toMatrixSequence(const char* s);
+const char* toCharArray(vector<g::matrix> b);
+vector<g::matrix> toMatrixSequence(string str);
+string toString(vector<g::matrix> b);
+
 lie_algebra* toLieAlgebra(const char* s);
 const char* toCharArray(lie_algebra* l);
 lie_algebra* toLieAlgebra(string str);
 string toString(lie_algebra* l);
 
-vector<g::matrix> toMatrixSequence(const char* s);
-const char* toCharArray(vector<g::matrix> b);
-vector<g::matrix> toMatrixSequence(string str);
-string toString(vector<g::matrix> b);
+vector<lie_algebra*> toLieAlgebraSequence(const char* s);
+const char* toCharArray(vector<lie_algebra*> b);
+vector<lie_algebra*> toLieAlgebraSequence(string str);
+string toString(vector<lie_algebra*> seq);
 
 const char* toCharArray(string str);
 // the following is already handled by C++
