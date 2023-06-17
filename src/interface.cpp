@@ -1,9 +1,11 @@
 #include "interface.h"
 
+const char* lastString = "";
 lie_algebra* storedLieAlgebra;
 lie_algebra* workingLieAlgebra;
 
 void setLieAlgebra(const char* s) {
+    if (strcmp(s, lastString) == 0) return;
     storedLieAlgebra = toLieAlgebra(s);
     workingLieAlgebra = storedLieAlgebra;
 }
