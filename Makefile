@@ -21,7 +21,7 @@ bin/libjoemat.dylib: bin/joemat/libjoemat.a bin/compat.o bin/interface.o
 # removing all the shared versions of the libraries,
 # wherever they might appear in the PATH
 
-bin/main.o: src/main.cpp
+bin/main.o: test/main.cpp
 	$(CXX) $(CFLAGS) -c -o $@ $^ $(LDFLAGS)
 
 bin/test: bin/main.o
