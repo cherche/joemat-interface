@@ -36,10 +36,6 @@ bin/compat.o: src/compat.cpp
 bin/interface.o: src/interface.cpp
 	$(CXX) $(CFLAGS) -fPIC -c -o $@ $^ $(LDFLAGS)
 
-src/joemat/out/library.a:
-	cd src/joemat
-	make
-
 bin/joemat/libjoemat.a: src/joemat/out/library.a
 	cp $^ $@
 
