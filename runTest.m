@@ -1,3 +1,5 @@
+function returnValue = runTest()
+
 addpath('./joemat')
 addpath('./mlfunctions')
 
@@ -21,3 +23,5 @@ disp("Dimension: " + getLieAlgebraDim(generators));
 disp("Basis: " + newline + matrixSeqToString(getLieAlgebraBasis(generators)));
 disp("Normalizer: " + newline + matrixSeqToString(getLieAlgebraNormalizer(generators)));
 disp("Centralizer: " + newline + matrixSeqToString(getLieAlgebraCentralizer(generators)));
+
+returnValue = 0;
