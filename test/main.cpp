@@ -40,8 +40,8 @@ int main(int argc, char* argv[]) {
 
     const char* L5_1_string = "[0.25 1 0 0;0 0.25 0 0;0 0 0.25 0;0 0 0 -0.75]\n[0 1 0 0;0 0 1 0;0 0 0 0;0 0 0 0]\n[0 0 1 0;0 0 0 0;0 0 0 0;0 0 0 0]";
     const char* L5_2_string = "[0.25 0 0 0;0 0.25 0 1;0 0 -0.75 0;0 0 0 0.25]\n[0 1 0 0;0 0 0 0;0 0 0 0;0 0 0 0]\n[0 0 0 1;0 0 0 0;0 0 0 0;0 0 0 0]";
-    const char* L5_3_string = "[0 1 0 0;0 0 1 0;0 0 0 1;0 0 0 0]\n[0 0 a 0;0 0 0 a+1;0 0 0 0;0 0 0 0]\n[0 0 0 1;0 0 0 0;0 0 0 0;0 0 0 0]";
-    const char* L5_4_string = "[0 1 0 0;0 0 0 0;0 0 0 1;0 0 0 0]\n[0 0 a 0;0 0 0 a+1;0 0 0 0;0 0 0 0]\n[0 0 0 1;0 0 0 0;0 0 0 0;0 0 0 0]";
+    const char* L5_4_string = "[0 1 0 0;0 0 1 0;0 0 0 1;0 0 0 0]\n[0 0 a 0;0 0 0 a+1;0 0 0 0;0 0 0 0]\n[0 0 0 1;0 0 0 0;0 0 0 0;0 0 0 0]";
+    const char* L5_5_string = "[0 1 0 0;0 0 0 0;0 0 0 1;0 0 0 0]\n[0 0 a 0;0 0 0 a+1;0 0 0 0;0 0 0 0]\n[0 0 0 1;0 0 0 0;0 0 0 0;0 0 0 0]";
     const char* generatorsString = L5_4_string;
     cout << "Generators:" << endl << generatorsString << endl;
     setUp(generatorsString);
