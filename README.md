@@ -4,11 +4,7 @@ A MATLAB interface to the Joe-s-Special-Matrix-Calc library.
 
 ## Building
 
-Navigate to the project directory and Run the following:
-```sh
-cd src/joemat
-make
-```
+Simply `cd` to the project directory and run `make`.
 This produces a library file in `bin/`, either `bin/libjoemat.dylib` or `bin/libjoemat.so`.
 
 Next, navigate to the project directory and run `generateInterfaceDefinition.m`.
@@ -26,12 +22,12 @@ In MATLAB, run `build(definejoemat)` to produce the interface file
 `joemat/joematInterface.dylib`.
 
 ## Installing
-Ensure `joematInterface.dylib` is in one of the directories in
-the MATLAB path. To do this temporarily, run the command
+Ensure `joematInterface.dylib` (or `.so`) is in one of the directories
+in the MATLAB path. To do this temporarily, run the command
 ```m
 addPath("path/to/joemat-interface/joemat")
 ```
-Next, add `mlfunctions/` to the MATLAB path.
+Similarly, add `mlfunctions/` to the MATLAB path.
 
 ## Usage
 Fix a dimension n and denote the type `matrixSeq` corresponding to
