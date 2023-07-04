@@ -1,5 +1,9 @@
 #include "compat.h"
 
+// symbols are automatically created and stored in the table
+g::symtab table;
+parser reader(table);
+
 // matrices
 g::matrix toMatrix(const char* s) {
     string str(s);
@@ -28,8 +32,6 @@ g::matrix toMatrix(string s) {
         mat.push_back(row);
     }
 
-    // TODO: Store symbols in a table
-    parser reader;
     int r = mat.size();
     int c = mat[0].size();
     list<ex> els = {};
