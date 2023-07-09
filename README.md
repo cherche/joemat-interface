@@ -4,13 +4,16 @@ A MATLAB interface to the Joe-s-Special-Matrix-Calc library.
 
 ## Building
 
-Simply `cd` to the project directory and run `make`.
-This produces a library file in `bin/`, either `bin/libjoemat.dylib` or `bin/libjoemat.so`.
+**Note:** In this document, `.*` stands in for one of the shared library
+extensions `.dylib` (macOS), `.so` (Linux), or `dll` (Windows).
+
+Simply `cd` to the project directory and run `make clean` followed by `make shared`.
+This produces a library file `libjoemat.*` in `bin/`.
 
 Next, navigate to the project directory and run `generateInterfaceDefinition.m`.
 It may be necessary to change the definition of `libFile` to
 ```m
-libFile = "bin/libjoemat.so";
+libFile = "bin/libjoemat.*";
 ```
 to match the path of the library file.
 
@@ -19,15 +22,47 @@ and replace every instance of `<MLTYPE>` with `"string"`
 and of `<SHAPE>` with `"nullTerminated"`.
 
 In MATLAB, run `build(definejoemat)` to produce the interface file
-`joemat/joematInterface.dylib`.
+`joematInterface.*` in `joemat/`.
+(The extension is again one of `.dylib`, `.so`, or `.dll`,
+depending on your platform.)
 
 ## Installing
-Ensure `joematInterface.dylib` (or `.so`) is in one of the directories
-in the MATLAB path. To do this temporarily, run the command
+
+### Simple single-project installation
+
+As an example, here is how one might install this library and its
+interface to a MATLAB project located at `project/`.
+Place `libjoemat.*` and `joematInterface.*`
+as in the following directory structure:
+```
+project/
+│
+└───bin/
+│   │   libjoemat.*
+│
+└───joemat/
+    │   joematInterface.*
+```
+Then place all the files in `mlfunctions/` in the root project directory `project/`,
+or simply add `mlfunctions/`, wherever it may be, to the MATLAB path.
+
+### Technical installation
+
+1. Ensure that library file `libjoemat.*` is
+either somewhere in your system's
+[run-time library path](https://www.mathworks.com/help/matlab/matlab_external/set-run-time-library-path-for-c-interface.html),
+or in `bin/` within your working MATLAB directory.
+(Your working MATLAB direcotory is the project folder that
+is open when you are running code that uses the interface.)
+
+2. Ensure `joematInterface.*` is in one of the directories
+in the MATLAB path. To do this temporairly, run the command
 ```m
 addPath("path/to/joemat-interface/joemat")
 ```
-Similarly, add `mlfunctions/` to the MATLAB path.
+or set the path from the GUI.
+
+3. Add `mlfunctions/` to the MATLAB path.
 
 ## Usage
 Fix a dimension n and denote the type `matrixSeq` corresponding to
