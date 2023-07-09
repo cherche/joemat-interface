@@ -5,51 +5,72 @@ UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
 	CFLAGS := -std=c++17 -arch x86_64
 	LDFLAGS := -Wl,-v
-	LIBFILE := bin/libjoemat.dylib
+	STATIC_LIBFILE := bin/libjoemat.a
+	SHARED_LIBFILE := bin/libjoemat.dylib
 else
 	CFLAGS := -std=c++17
 	LDFLAGS := -Wl,-Bstatic
-	LIBFILE := bin/libjoemat.so
+	STATIC_LIBFILE := bin/libjoemat.a
+	SHARED_LIBFILE := bin/libjoemat.so
 endif
 
-# SOURCES=$(src/)
+$(STATIC_LIBFILE): bin/static/interface.o bin/static/compat.o bin/static/lie_algebra.o bin/static/lin_alg.o bin/static/utils.o
+	ar rcs $@ $^
 
-#bin/static/%.o: src/%.cpp
-#	$(CXX) $(CFLAGS) -c -o $@ $^ $(LDFLAGS)
+bin/static/interface.o: src/interface.cpp
+	$(CXX) $(CFLAGS) -c -o $@ $^ $(LDFLAGS)
 
-# Static library doesn't seem to work ...
-# so we'll be stuck with shared.
-# However, this might not be too big a deal since
-# we can still statically link stuff into it.
-# (No idea how that works.)
-$(LIBFILE): bin/joemat/libjoemat.a bin/compat.o bin/interface.o
-#	ar rcs $@ $^
-	$(CXX) $(CFLAGS) -shared bin/compat.o bin/interface.o -o $@ $(LDFLAGS) -Lbin/joemat -ljoemat -lginac -lcln -lgmp
+bin/static/compat.o: src/compat.cpp
+	$(CXX) $(CFLAGS) -c -o $@ $^ $(LDFLAGS)
+
+bin/static/lie_algebra.o:
+	make -C src/joemat
+	cp src/joemat/out/lie_algebra.o bin/static
+
+bin/static/lin_alg.o:
+	make -C src/joemat
+	cp src/joemat/out/lin_alg.o bin/static
+
+bin/static/utils.o:
+	make -C src/joemat
+	cp src/joemat/out/utils.o bin/static
+
+bin/mainstatic.o: test/main.cpp
+	$(CXX) $(CFLAGS) -c -o $@ $^ $(LDFLAGS)
+
+bin/teststatic: bin/mainstatic.o
+	$(CXX) -o $@ $(CFLAGS) -Lbin -ljoemat -lginac -lcln -lgmp $^
+
 # Note that macOS's `ld` has no -Bstatic option,
 # so the only way to force a static link is by
 # removing all the shared versions of the libraries,
 # wherever they might appear in the PATH
+$(SHARED_LIBFILE): bin/shared/interface.o bin/shared/compat.o bin/shared/libjoemat.a
+	$(CXX) $(CFLAGS) -shared bin/shared/interface.o bin/shared/compat.o -o $@ $(LDFLAGS) -Lbin/shared -ljoemat -lginac -lcln -lgmp
 
-bin/compat.o: src/compat.cpp
+bin/shared/interface.o: src/interface.cpp
 	$(CXX) $(CFLAGS) -fPIC -c -o $@ $^ $(LDFLAGS)
 
-bin/interface.o: src/interface.cpp
+bin/shared/compat.o: src/compat.cpp
 	$(CXX) $(CFLAGS) -fPIC -c -o $@ $^ $(LDFLAGS)
 
-src/joemat/out/library.a:
+bin/shared/libjoemat.a:
 	make -C src/joemat
+	cp src/joemat/out/library.a bin/shared/libjoemat.a
 
-bin/joemat/libjoemat.a: src/joemat/out/library.a
-	cp $^ $@
+bin/mainshared.o: test/main.cpp
+	$(CXX) $(CFLAGS) -fPIC -c -o $@ $^ $(LDFLAGS)
 
-bin/main.o: test/main.cpp
-	$(CXX) $(CFLAGS) -c -o $@ $^ $(LDFLAGS)
+bin/testshared: bin/mainshared.o
+	$(CXX) -o $@ $(CFLAGS) -Lbin -ljoemat $^
 
-bin/test: bin/main.o
-	$(CXX) $(CFLAGS) -Lbin -ljoemat -o $@ $^
+static: $(STATIC_LIBFILE)
+shared: $(SHARED_LIBFILE)
+teststatic: $(STATIC_LIBFILE) bin/teststatic
+testshared: $(SHARED_LIBFILE) bin/testshared
+all: $(STATIC_LIBFILE) $(SHARED_LIBFILE) teststatic testshared
 
-test: $(LIBFILE) bin/main.o bin/test
-all: bin/joemat/libjoemat.a bin/compat.o $(LIBFILE)
 clean:
 	rm -r bin/*
-	mkdir bin/joemat
+	mkdir -p bin/static
+	mkdir -p bin/shared
