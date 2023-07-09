@@ -1,18 +1,52 @@
-UNAME_S := $(shell uname -s)
+# Might need to play around with the Windows flags
+ifeq ($(OS),Windows_NT)
+	CFLAGS := -std=c++17
+	LDFLAGS := -Wl,-Bstatic
+	STATIC_LIBFILE := bin/libjoemat.lib
+	SHARED_LIBFILE := bin/libjoemat.dll
+else
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),Linux)
+		CFLAGS := -std=c++17
+		LDFLAGS := -Wl,-Bstatic
+		STATIC_LIBFILE := bin/libjoemat.a
+		SHARED_LIBFILE := bin/libjoemat.so
+	endif
 # Need to compile for x86_64 because MATLAB runs on it ...
 # Otherwise, MATLAB says that it's not compatible because
 # it's a 32-bit library (which is at least half right, haha).
-ifeq ($(UNAME_S),Darwin)
-	CFLAGS := -std=c++17 -arch x86_64
-	LDFLAGS := -Wl,-v
-	STATIC_LIBFILE := bin/libjoemat.a
-	SHARED_LIBFILE := bin/libjoemat.dylib
-else
-	CFLAGS := -std=c++17
-	LDFLAGS := -Wl,-Bstatic
-	STATIC_LIBFILE := bin/libjoemat.a
-	SHARED_LIBFILE := bin/libjoemat.so
+	ifeq ($(UNAME_S),Darwin)
+		CFLAGS := -std=c++17 -arch x86_64
+		LDFLAGS := -Wl,-v
+		STATIC_LIBFILE := bin/libjoemat.a
+		SHARED_LIBFILE := bin/libjoemat.dylib
+	endif
 endif
+
+
+# Note that macOS's `ld` has no -Bstatic option,
+# so the only way to force a static link is by
+# removing all the shared versions of the libraries,
+# wherever they might appear in the PATH
+$(SHARED_LIBFILE): bin/shared/interface.o bin/shared/compat.o bin/shared/libjoemat.a
+	$(CXX) $(CFLAGS) -shared bin/shared/interface.o bin/shared/compat.o -o $@ $(LDFLAGS) -Lbin/shared -ljoemat -lginac -lcln -lgmp
+
+bin/shared/interface.o: src/interface.cpp
+	$(CXX) $(CFLAGS) -fPIC -c -o $@ $^ $(LDFLAGS)
+
+bin/shared/compat.o: src/compat.cpp
+	$(CXX) $(CFLAGS) -fPIC -c -o $@ $^ $(LDFLAGS)
+
+bin/shared/libjoemat.a:
+	make -C src/joemat
+	cp src/joemat/out/library.a bin/shared/libjoemat.a
+
+bin/mainshared.o: test/main.cpp
+	$(CXX) $(CFLAGS) -fPIC -c -o $@ $^ $(LDFLAGS)
+
+bin/testshared: bin/mainshared.o
+	$(CXX) -o $@ $(CFLAGS) -Lbin -ljoemat $^
+
 
 $(STATIC_LIBFILE): bin/static/interface.o bin/static/compat.o bin/static/lie_algebra.o bin/static/lin_alg.o bin/static/utils.o
 	ar rcs $@ $^
@@ -40,29 +74,6 @@ bin/mainstatic.o: test/main.cpp
 
 bin/teststatic: bin/mainstatic.o
 	$(CXX) -o $@ $(CFLAGS) -Lbin -ljoemat -lginac -lcln -lgmp $^
-
-# Note that macOS's `ld` has no -Bstatic option,
-# so the only way to force a static link is by
-# removing all the shared versions of the libraries,
-# wherever they might appear in the PATH
-$(SHARED_LIBFILE): bin/shared/interface.o bin/shared/compat.o bin/shared/libjoemat.a
-	$(CXX) $(CFLAGS) -shared bin/shared/interface.o bin/shared/compat.o -o $@ $(LDFLAGS) -Lbin/shared -ljoemat -lginac -lcln -lgmp
-
-bin/shared/interface.o: src/interface.cpp
-	$(CXX) $(CFLAGS) -fPIC -c -o $@ $^ $(LDFLAGS)
-
-bin/shared/compat.o: src/compat.cpp
-	$(CXX) $(CFLAGS) -fPIC -c -o $@ $^ $(LDFLAGS)
-
-bin/shared/libjoemat.a:
-	make -C src/joemat
-	cp src/joemat/out/library.a bin/shared/libjoemat.a
-
-bin/mainshared.o: test/main.cpp
-	$(CXX) $(CFLAGS) -fPIC -c -o $@ $^ $(LDFLAGS)
-
-bin/testshared: bin/mainshared.o
-	$(CXX) -o $@ $(CFLAGS) -Lbin -ljoemat $^
 
 static: $(STATIC_LIBFILE)
 shared: $(SHARED_LIBFILE)
