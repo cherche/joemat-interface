@@ -101,8 +101,8 @@ This representation **must** satisfy the following to be processed correctly:
 * an at-symbol on its own line (`\n@\n` in C++ or `newline + "@" + newline` in MATLAB) separates every two bases, i.e., separates Lie algebras from one another;
 * and there are no additional characters or whitespaces.
 
-Here's a correct string representation of the standard basis for 𝔤𝔩(2,ℂ),
-followed by the standard basis for 𝔰𝔩(2,ℂ):
+Here's a correct string representation of the standard basis for gl(2,ℂ),
+followed by the standard basis for sl(2,ℂ):
 ```
 [1 0;0 0]
 [0 1;0 0]
