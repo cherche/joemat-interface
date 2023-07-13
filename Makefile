@@ -41,10 +41,10 @@ bin/shared/libjoemat.a:
 	make -C src/joemat
 	cp src/joemat/out/library.a bin/shared/libjoemat.a
 
-bin/mainshared.o: test/main.cpp
+bin/testshared.o: test/test.cpp
 	$(CXX) $(CFLAGS) -fPIC -c -o $@ $^ $(LDFLAGS)
 
-bin/testshared: bin/mainshared.o
+bin/testshared: bin/testshared.o
 	$(CXX) -o $@ $(CFLAGS) -Lbin -ljoemat $^
 
 
@@ -69,10 +69,10 @@ bin/static/utils.o:
 	make -C src/joemat
 	cp src/joemat/out/utils.o bin/static
 
-bin/mainstatic.o: test/main.cpp
+bin/teststatic.o: test/test.cpp
 	$(CXX) $(CFLAGS) -c -o $@ $^ $(LDFLAGS)
 
-bin/teststatic: bin/mainstatic.o
+bin/teststatic: bin/teststatic.o
 	$(CXX) -o $@ $(CFLAGS) -Lbin -ljoemat -lginac -lcln -lgmp $^
 
 static: $(STATIC_LIBFILE)
