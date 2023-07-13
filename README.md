@@ -94,12 +94,12 @@ MATLAB and C++. In fact, the interface almost entirely handles
 *string representations* of sequences of matrices
 (or sequences of bases of Lie algebras, in the case of series).
 This representation **must** satisfy the following to be processed correctly:
-* each matrix must be surrounded by a pair of square brackets (`[` and `]`);
-* a semicolon `;` separates every two rows of the same matrix;
-* a space ` ` separates every two elements of the same row;
+* each matrix must be surrounded by a pair of square brackets (`"["` and `"]"`);
+* a semicolon (`";"`) separates every two rows of the same matrix;
+* a space (`" "`) separates every two elements of the same row;
 * a newline (`"\n"` in C++ or `newline` in MATLAB) separates every two matrices in the basis for the same Lie algebra;
-* an at-symbol on its own line (`\n@\n` in C++ or `newline + "@" + newline` in MATLAB) separates every two bases, i.e., separates Lie algebras from one another;
-* and there are no additional characters or whitespaces.
+* an at-symbol on its own line (`"\n@\n"` in C++ or `newline + "@" + newline` in MATLAB) separates every two bases, i.e., separates Lie algebras from one another;
+* and there are no additional characters (including whitespaces).
 
 Here's a correct string representation of the standard basis for gl(2,ℂ),
 followed by the standard basis for sl(2,ℂ):
@@ -129,12 +129,12 @@ Here's an incorrect string representation of the same pair of bases:
 #### Functionality available in the interface
 The following four functions are available:
 * `clib.joemat.getLieAlgebraBasis(str) -> str`
-* `clib.joemat.getLieAlgebraDim(str) -> int`
+* `clib.joemat.getLieAlgebraDim(str) -> num`
 * `clib.joemat.getLieAlgebraCentralizer(str) -> str`
 * `clib.joemat.getLieAlgebraNormalizer(str) -> str`
 
-Below is an example use case may be where one wishes both to
-determine the size of the centralizer but also print out a basis.
+Below is an example which determines the size of
+the centralizer and also prints out a basis.
 ```m
 # Matrix sequence of generators
 # (a MATLAB array of matrices) is provided
