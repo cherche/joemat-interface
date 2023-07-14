@@ -1,26 +1,25 @@
 # joemat-interface
-A MATLAB interface to the Joe-s-Special-Matrix-Calc library.
+A MATLAB interface to the [Joe-s-Special-Matrix-Calc](https://github.com/Bortoise/Joe-s-Special-Matrix-Calc) library.
 
 **Note:** In this document, `.*` stands in for one of the shared library
-extensions `dll` (Windows), `.so` (Linux), or `.dylib` (macOS).
+extensions `.dll` (Windows), `.so` (Linux), or `.dylib` (macOS).
 
 ## Building
-Simply `cd` to the project directory and run `make clean` followed by `make shared`.
-This produces a library file `libjoemat.*` in `bin/`.
-
-Next, navigate to the project directory and run `generateInterfaceDefinition.m`.
-It may be necessary to change the definition of `libFile` to
-```m
-libFile = "bin/libjoemat.*";
+1. Run the following commands by copying each line and runing them (one at a time):
+```sh
+git clone https://github.com/cherche/joemat-interface.git
+cd joemat-interface/
+make clean
+make shared
 ```
-to match the path of the library file..
+This should produce a library file `libjoemat.*` in `bin/`.
 
-In MATLAB, run `definejoemat.m`. This should produce two files
-`definejoemat.m` and `joematData.xml`. Next, run
-`build(definejoemat)` to produce the interface file
-`joematInterface.*` in `joemat/`.
-(The extension is again one of `.dll`, `.so`, or `.dylib`,
-depending on your platform.)
+2. Next, open MATLAB, navigate to the project directory, and run
+`generateInterfaceDefinition.m`. This should produce two files
+`definejoemat.m` and `joematData.xml`.
+
+3. Finally, run `build(definejoemat)` to produce another library file
+`joematInterface.*` (the interface) in `joemat/`.
 
 ## Installing
 
@@ -38,8 +37,8 @@ project/
 └───joemat/
     │   joematInterface.*
 ```
-Then place all the files in `mlfunctions/` in the root project directory `project/`,
-or simply add `mlfunctions/`, wherever it may be, to the MATLAB path.
+Then place all the files in `mlfunctions/` in the root project
+directory `project/`, or simply add `mlfunctions/` to the MATLAB path.
 
 ### Technical installation
 1. Ensure that the library file `libjoemat.*` is
@@ -49,16 +48,17 @@ or in `bin/` within your working MATLAB directory.
 (Your working MATLAB direcotory is the project folder that
 is open when you are running code that uses the interface.)
 2. Ensure `joematInterface.*` is in one of the directories
-in the MATLAB path. To do this temporairly, run the command
+in the MATLAB path. To do this temporarily, run the command
 ```m
 addPath("path/to/joemat-interface/joemat")
 ```
-or set the path from the GUI.
+Alternatively, set the path from the GUI.
+
 3. Similarly, ensure `mlfunctions/` is in the MATLAB path.
 
 ## Usage
-Fix a dimension n and denote the type `matrixSeq` corresponding to
-horizontal MATLAB arrays consisting of n-by-n MATLAB matrices.
+Fix a dimension n and let `matrixSeq` be the type corresponding to
+the horizontal MATLAB arrays consisting of n-by-n MATLAB matrices.
 The following four functions are available:
 * `getLieAlgebraBasis(matrixSeq generators) -> matrixSeq`
 * `getLieAlgebraDim(matrixSeq generators) -> int`
@@ -93,7 +93,7 @@ This representation **must** satisfy the following to be processed correctly:
 * a space (`" "`) separates every two elements of the same row;
 * a newline (`"\n"` in C++ or `newline` in MATLAB) separates every two matrices in the basis for the same Lie algebra;
 * an at-symbol on its own line (`"\n@\n"` in C++ or `newline + "@" + newline` in MATLAB) separates every two bases, i.e., separates Lie algebras from one another;
-* and there are no additional characters (including whitespaces).
+* and there are no additional characters (including whitespace).
 
 Here's a correct string representation of the standard basis for gl(2,ℂ),
 followed by the standard basis for sl(2,ℂ):
@@ -130,8 +130,9 @@ The following four functions are available:
 Below is an example which determines the size of
 the centralizer and also prints out a basis.
 ```m
-# Matrix sequence of generators
-# (a MATLAB array of matrices) is provided
+# Start with a given matrix sequence of generators
+# (i.e., a MATLAB array of matrices):
+#
 # generators = [...]
 
 # First, convert to a string usable by `clib.joemat`
@@ -140,11 +141,10 @@ generatorsString = matrixSeqToString(generators)
 # Get a string representation of the centralizer
 centString = clib.joemat.getLieAlgebraCentralizer(generatorsString)
 
-# Get a MATLAB array of the centralizer,
-# to determine its length (and hence the dimension of the centralizer)
-# Technically speaking, it is more efficient to count opening brackets
-# in the string, but we will instead convert the string
-# to a MATLAB array of matrices for the sake of demonstration
+# Get a MATLAB array (a "matrix sequence") representing a basis
+# of the centralizer in order to determine the dimension of the centralizer.
+# Note: This is only for the sake of demonstration.
+# Practically, it is faster to count opening brackets [ in the string representation.
 cent = stringToMatrixSeq(centString)
 centDim = length(cent)
 ```
