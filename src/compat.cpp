@@ -17,8 +17,9 @@ const char* toCharArray(g::matrix a) {
 
 // We assume the input is something like "[1 0; 0 1]"
 // (exactly that much whitespace, no more, no less)
-g::matrix toMatrix(string s) {
-    string meat = s.substr(1, s.size() - 2);
+g::matrix toMatrix(string str) {
+    compress_whitespace_and_newlines(str);
+    string meat = str.substr(1, str.size() - 2);
     //std::cout << meat << std::endl;
     vector<string> rows = split(meat, ";");
 
@@ -27,6 +28,7 @@ g::matrix toMatrix(string s) {
     vector<vector<string>> mat = {};
     for (int i = 0; i < rows.size(); i++) {
         string rowString = rows[i];
+        trim(rowString);
         //std::cout << rowString << std::endl;
         vector<string> row = split(rowString, " ");
         mat.push_back(row);
@@ -73,10 +75,12 @@ const char* toCharArray(vector<g::matrix> b) {
 }
 
 vector<g::matrix> toMatrixSequence(string str) {
+    compress_whitespace_and_newlines(str);
     vector<string> matrixStrings = split(str, "\n");
 
     vector<g::matrix> seq = vector<g::matrix>();
     for (int i = 0; i < matrixStrings.size(); i++) {
+        trim(matrixStrings[i]);
         g::matrix matrix = toMatrix(matrixStrings[i]);
         seq.push_back(matrix);
     }
@@ -108,6 +112,7 @@ const char* toCharArray(lie_algebra* l) {
 }
 
 lie_algebra* toLieAlgebra(string str) {
+    compress_whitespace_and_newlines(str);
     vector<g::matrix> generators = toMatrixSequence(str);
     lie_algebra* l = new lie_algebra(generators, false);
     return l;
@@ -130,10 +135,12 @@ const char* toCharArray(vector<lie_algebra*> b) {
 }
 
 vector<lie_algebra*> toLieAlgebraSequence(string str) {
+    compress_whitespace_and_newlines(str);
     vector<string> algebraStrings = split(str, "\n@\n");
 
     vector<lie_algebra*> seq = vector<lie_algebra*>();
     for (int i = 0; i < algebraStrings.size(); i++) {
+        trim(algebraStrings[i]);
         lie_algebra* algebra = toLieAlgebra(algebraStrings[i]);
         seq.push_back(algebra);
     }
@@ -191,4 +198,36 @@ vector<string> split(string target, string delimiter) {
     }
 
     return components;
+}
+
+string replace(string target, string oldseg, string newseg) {
+    vector<string> components = split(target, oldseg);
+    return join(components, newseg);
+}
+
+void ltrim(string &s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }));
+}
+
+void rtrim(string &s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }).base(), s.end());
+}
+
+void trim(string &s) {
+    rtrim(s);
+    ltrim(s);
+}
+
+bool BothAreWhitespace(char lhs, char rhs) { return std::isspace(lhs) && std::isspace(rhs); }
+bool BothAreNewlines(char lhs, char rhs) { return (lhs == rhs) && (lhs == '\n'); }
+
+void compress_whitespace_and_newlines(string &s) {
+    std::string::iterator new_end = std::unique(s.begin(), s.end(), BothAreWhitespace);
+    s.erase(new_end, s.end());
+    new_end = std::unique(s.begin(), s.end(), BothAreNewlines);
+    s.erase(new_end, s.end());
 }

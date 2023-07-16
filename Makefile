@@ -38,8 +38,8 @@ bin/shared/compat.o: src/compat.cpp
 	$(CXX) $(CFLAGS) -fPIC -c -o $@ $^ $(LDFLAGS)
 
 bin/shared/libjoemat.a:
-	make -C src/joemat
-	cp src/joemat/out/library.a bin/shared/libjoemat.a
+	make -C lib/joemat
+	cp lib/joemat/out/library.a bin/shared/libjoemat.a
 
 bin/testshared.o: test/test.cpp
 	$(CXX) $(CFLAGS) -fPIC -c -o $@ $^ $(LDFLAGS)
@@ -58,16 +58,16 @@ bin/static/compat.o: src/compat.cpp
 	$(CXX) $(CFLAGS) -c -o $@ $^ $(LDFLAGS)
 
 bin/static/lie_algebra.o:
-	make -C src/joemat
-	cp src/joemat/out/lie_algebra.o bin/static
+	make -C lib/joemat
+	cp lib/joemat/out/lie_algebra.o bin/static
 
 bin/static/lin_alg.o:
-	make -C src/joemat
-	cp src/joemat/out/lin_alg.o bin/static
+	make -C lib/joemat
+	cp lib/joemat/out/lin_alg.o bin/static
 
 bin/static/utils.o:
-	make -C src/joemat
-	cp src/joemat/out/utils.o bin/static
+	make -C lib/joemat
+	cp lib/joemat/out/utils.o bin/static
 
 bin/teststatic.o: test/test.cpp
 	$(CXX) $(CFLAGS) -c -o $@ $^ $(LDFLAGS)
@@ -75,11 +75,19 @@ bin/teststatic.o: test/test.cpp
 bin/teststatic: bin/teststatic.o
 	$(CXX) -o $@ $(CFLAGS) -Lbin -ljoemat -lginac -lcln -lgmp $^
 
+bin/joemat.o: src/main.cpp
+	$(CXX) $(CFLAGS) -c -o $@ $^ $(LDFLAGS)
+
+bin/joemat: bin/joemat.o bin/static/compat.o bin/static/lie_algebra.o bin/static/lin_alg.o bin/static/utils.o
+	$(CXX) -o $@ $(CFLAGS) -Lbin -lginac -lcln -lgmp $^
+
 static: $(STATIC_LIBFILE)
 shared: $(SHARED_LIBFILE)
 teststatic: $(STATIC_LIBFILE) bin/teststatic
 testshared: $(SHARED_LIBFILE) bin/testshared
 all: $(STATIC_LIBFILE) $(SHARED_LIBFILE) teststatic testshared
+
+exec: bin/joemat
 
 clean:
 	rm -r bin/*

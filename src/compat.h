@@ -8,7 +8,7 @@ using std::vector;
 using std::list;
 using std::string;
 
-#include "joemat/src/headers/lie_algebra.h"
+#include "../lib/joemat/src/headers/lie_algebra.h"
 
 #include <ginac/matrix.h>
 #include <ginac/ex.h>
@@ -23,7 +23,7 @@ namespace g = GiNaC;
 
 g::matrix toMatrix(const char* s);
 const char* toCharArray(g::matrix a);
-g::matrix toMatrix(string s);
+g::matrix toMatrix(string str);
 string toString(g::matrix a);
 
 vector<g::matrix> toMatrixSequence(const char* s);
@@ -46,5 +46,11 @@ const char* toCharArray(string str);
 // string toString(const char*);
 string join(vector<string> strings, string joiner);
 vector<string> split(string target, string delimiter);
+string replace(string target, string oldseg, string newseg);
+
+void ltrim(string &s);
+void rtrim(string &s);
+void trim(string &s);
+void compress_whitespace_and_newlines(string &s);
 
 #endif // COMPAT_H

@@ -6,3 +6,5 @@ joematData.xml
 *.asv
 *.pdf
 *.tex
+matrixInput.txt
+output.csv

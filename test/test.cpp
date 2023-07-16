@@ -86,5 +86,12 @@ int main(int argc, char* argv[]) {
     string matrixString = "[x y z;a b c;0 1 0]";
     testStrToMatrixSameSymbols(matrixString);
 
+    string L5_1_string(L5_1);
+    string L5_2_string(L5_2);
+    string matrixInput = L5_1_string + "\n\n\n@\n" + L5_2_string;
+    vector<lie_algebra*> algebraSeq = toLieAlgebraSequence(matrixInput);
+    cout << toString(algebraSeq[0]) << endl;
+    cout << toString(algebraSeq[1]) << endl;
+
     return 0;
 }
