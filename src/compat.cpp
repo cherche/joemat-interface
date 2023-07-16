@@ -1,22 +1,11 @@
 #include "compat.h"
 
 // symbols are automatically created and stored in the table
+// this way, when a (for instance) letter shows up more than once,
+// GiNaC will still see interpret it as the same symbol object
 g::symtab table;
 parser reader(table);
 
-// matrices
-g::matrix toMatrix(const char* s) {
-    string str(s);
-    return toMatrix(str);
-}
-
-const char* toCharArray(g::matrix a) {
-    string str = toString(a);
-    return toCharArray(str);
-}
-
-// We assume the input is something like "[1 0; 0 1]"
-// (exactly that much whitespace, no more, no less)
 g::matrix toMatrix(string str) {
     compress_whitespace_and_newlines(str);
     string meat = str.substr(1, str.size() - 2);
@@ -63,17 +52,6 @@ string toString(g::matrix a) {
     return "[" + result + "]";
 }
 
-// matrix sequences
-vector<g::matrix> toMatrixSequence(const char* s) {
-    string str(s);
-    return toMatrixSequence(str);
-}
-
-const char* toCharArray(vector<g::matrix> b) {
-    string str = toString(b);
-    return toCharArray(str);
-}
-
 vector<g::matrix> toMatrixSequence(string str) {
     compress_whitespace_and_newlines(str);
     vector<string> matrixStrings = split(str, "\n");
@@ -100,17 +78,6 @@ string toString(vector<g::matrix> seq) {
     return seqString;
 }
 
-// lie algebras
-lie_algebra* toLieAlgebra(const char* s) {
-    string str(s);
-    return toLieAlgebra(str);
-}
-
-const char* toCharArray(lie_algebra* l) {
-    string str = toString(l);
-    return toCharArray(str);
-}
-
 lie_algebra* toLieAlgebra(string str) {
     compress_whitespace_and_newlines(str);
     vector<g::matrix> generators = toMatrixSequence(str);
@@ -121,17 +88,6 @@ lie_algebra* toLieAlgebra(string str) {
 string toString(lie_algebra* l) {
     vector<g::matrix> basis = l->get_basis();
     return toString(basis);
-}
-
-// lie algebra sequences
-vector<lie_algebra*> toLieAlgebraSequence(const char* s) {
-    string str(s);
-    return toLieAlgebraSequence(str);
-}
-
-const char* toCharArray(vector<lie_algebra*> b) {
-    string str = toString(b);
-    return toCharArray(str);
 }
 
 vector<lie_algebra*> toLieAlgebraSequence(string str) {
@@ -160,7 +116,47 @@ string toString(vector<lie_algebra*> seq) {
     return seqString;
 }
 
-// util
+g::matrix toMatrix(const char* s) {
+    string str(s);
+    return toMatrix(str);
+}
+
+const char* toCharArray(g::matrix a) {
+    string str = toString(a);
+    return toCharArray(str);
+}
+
+vector<g::matrix> toMatrixSequence(const char* s) {
+    string str(s);
+    return toMatrixSequence(str);
+}
+
+const char* toCharArray(vector<g::matrix> b) {
+    string str = toString(b);
+    return toCharArray(str);
+}
+
+lie_algebra* toLieAlgebra(const char* s) {
+    string str(s);
+    return toLieAlgebra(str);
+}
+
+const char* toCharArray(lie_algebra* l) {
+    string str = toString(l);
+    return toCharArray(str);
+}
+
+vector<lie_algebra*> toLieAlgebraSequence(const char* s) {
+    string str(s);
+    return toLieAlgebraSequence(str);
+}
+
+const char* toCharArray(vector<lie_algebra*> b) {
+    string str = toString(b);
+    return toCharArray(str);
+}
+
+// UTIL
 const char* toCharArray(string str) {
     // declaring character array (+1 for null terminator)
     char* result = new char[str.length() + 1];
