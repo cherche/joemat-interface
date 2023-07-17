@@ -18,8 +18,9 @@ g::matrix toMatrix(string str) {
     for (int i = 0; i < rows.size(); i++) {
         string rowString = rows[i];
         trim(rowString);
-        //std::cout << rowString << std::endl;
-        vector<string> row = split(rowString, " ");
+        // If there are commas, use commas as the delimiter
+        string delimiter = (rowString.find(',') != std::string::npos) ? "," : " ";
+        vector<string> row = split(rowString, delimiter);
         mat.push_back(row);
     }
 

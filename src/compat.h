@@ -28,12 +28,12 @@ namespace g = GiNaC;
  * - at the start and end of the string are '[' and ']'
  *   (a pair of square brackets), respectively.
  * - between every two rows is one semicolon ';'
- * - between every two entries in the same row is one space ' '
- * This specification closely resembles MATLAB matrix syntax,
- * with the exception that it does not accept commas
- * as a separator for entries in the same row.
+ * - between every two entries in the same row is one comma ',',
+ *   or between every two entries in the same row is one space ' '
+ *   (it is not acceptable to mix commas and space for the same row)
  *
- * There is limited tolerance for extraneous whitespace
+ * This specification closely resembles MATLAB matrix syntax;
+ * however; there is limited tolerance for extraneous whitespace
  * (e.g., a string with spaces after the semicolons
  * should still be accepted) but no promise is made.
  *
@@ -42,6 +42,7 @@ namespace g = GiNaC;
  */
 g::matrix toMatrix(string str);
 // Example of acceptable input: "[1 0;0 1]"
+// Another example of acceptable input: "[1,0;0 1]"
 
 /**
  * Returns the string representation of a GiNaC matrix
