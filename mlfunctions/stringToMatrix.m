@@ -8,9 +8,9 @@ function mat = stringToMatrix(string)
 %    mat = str2num(string)
 %end
 
-mat = str2sym(string)
+mat = str2sym(string);
 
 function val = hasSymbols(string)
-    matches = regexp(string, "[a-zA-Z]")
-    val = length(matches) > 0
+    matches = regexp(string, "[a-zA-Z]");
+    val = length(matches) > 0;
 
